@@ -1,9 +1,19 @@
-from flask import Flask, render_template
-
+from flask import Flask, render_template, flash
+from flask_wtf import FlaskForm
+from wtforms import StringField, EmailField, SubmitField, PasswordField
+from wtforms.validators import DataRequired, Email, Length
 
 # Initializing the app
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'pass'
 
+
+# User login Form
+class UserForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = EmailField('Email', validators=[Email(), DataRequired()])
+    password = PasswordField('Password', validators=[Length(min=6, max=16), DataRequired()]) # 6 - 12 digit pass
+    submit = SubmitField('Submit')
 
 # Main page
 @app.route("/")
@@ -26,4 +36,5 @@ def page_not_found(e):
 # User Info Page
 @app.route("/user")
 def user():
-    return render_template("user.html")
+    form = UserForm()
+    return render_template("user.html", form=form)
