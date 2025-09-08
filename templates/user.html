@@ -1,8 +1,14 @@
 {% extends "index.html" %}
 
 {% block body %}
+
+{% if name %}
+<h1>Hello, {{ name }} </h1>
+<h3>Your Email: {{ email }} </h3>
+<h4>Password - {{ password }}</h4>
+{% else %}
 <h1> User </h1>
-<form action="">
+<form method="post">
     {{ form.hidden_tag() }}
 
     {{ form.name.label(class="form-label") }}
@@ -17,5 +23,7 @@
     {{ form.submit(class="btn btn-secondary") }}
 
 </form>
+{% endif %}
+
 
 {% endblock %}
