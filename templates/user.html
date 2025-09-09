@@ -3,9 +3,15 @@
 {% block body %}
 
 {% if name %}
-<h1>Hello, {{ name }} </h1>
-<h3>Your Email: {{ email }} </h3>
-<h4>Password - {{ password }}</h4>
+<!-- Alert Message -->
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {% for message in get_flashed_messages() %}
+    {{ message }}
+    {% endfor%}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<h2>Hi, <strong>{{name}} </strong>!!!</h2>
+
 {% else %}
 <h1> User </h1>
 <form method="post">
@@ -13,12 +19,6 @@
 
     {{ form.name.label(class="form-label") }}
     {{ form.name(class="form-control") }}
-    <br>
-    {{ form.email.label(class="form-label") }}
-    {{ form.email(class="form-control") }}
-    <br>
-    {{ form.password.label(class="form-label") }}
-    {{ form.password(class="form-control") }}
     <br>
     {{ form.submit(class="btn btn-secondary") }}
 

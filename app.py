@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash
 from flask_wtf import FlaskForm
-from wtforms import StringField, EmailField, SubmitField, PasswordField
-from wtforms.validators import DataRequired, Length
+from wtforms import StringField, SubmitField    # EmailField, PasswordField
+from wtforms.validators import DataRequired     # Length
 
 # Initializing the app
 app = Flask(__name__)
@@ -11,8 +11,8 @@ app.config['SECRET_KEY'] = 'pass'
 # User login Form
 class UserForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    email = EmailField('Email', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[Length(min=6, max=16), DataRequired()]) # 6 - 12 digit pass
+    # email = EmailField('Email', validators=[DataRequired()])
+    # password = PasswordField('Password', validators=[Length(min=6, max=16), DataRequired()]) # 6 - 12 digit pass
     submit = SubmitField('Submit')
 
 # Main page
@@ -42,15 +42,10 @@ def user():
     # Validating form
     if form.validate_on_submit():
         name = form.name.data
-        email = form.email.data
-        password = form.password.data
-        return render_template("user.html", 
-                               form=form, 
-                               name=name, 
-                               email=email, 
-                               password=password)
+        # email = form.email.data
+        # password = form.password.data
+        flash("Form Submitted Successfully!")
+        return render_template("user.html", form=form, name=name)
     
     else:
-        return render_template("user.html", 
-                               form=form, 
-                               name=name)
+        return render_template("user.html", form=form, name=name)
