@@ -2,10 +2,28 @@ from flask import Flask, render_template, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField    # EmailField, PasswordField
 from wtforms.validators import DataRequired     # Length
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
 
 # Initializing the app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'pass'
+# App Configurations
+app.config['SECRET_KEY'] = 'pass'   # Secret Key
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' # Database
+
+# Initializing the DB
+db = SQLAlchemy(app)
+
+# DB Model
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    date_added = db.Column(db.DateTime, default=datetime.now)
+
+    def __repr__(self):
+        return '<Name %r>' % self.name
 
 
 # User login Form
