@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for
+from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, EmailField    # EmailField, PasswordField
 from wtforms.validators import DataRequired     # Length
@@ -96,3 +96,25 @@ def add_user():
 
     
     return render_template("add.html", form=form, our_users=our_users)
+
+
+# Update user route
+@app.route("/update/<int:id>", methods=["GET", "POST"])
+def update(id):
+    form = UserForm()
+    user_to_update = Users.query.get_or_404(id)
+    if request == "POST":
+        # Updating from values from the template
+        user_to_update.name = request.form["name"]
+        user_to_update.email = request.form["email"]
+        try:
+            db.session.commit()
+            flash("User Updated Successfully!!!")
+            redirect(url_for(add_user))
+        except:
+            flash("User Update Failed!!! Try Again...")
+            redirect(url_for(add_user))
+    else:
+        return render_template("update.html", 
+                               form=form, 
+                               user_to_update=user_to_update)
