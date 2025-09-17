@@ -19,16 +19,16 @@
 {% endif %}
 {% endwith %}
 
-<!-- Add User Form -->
+<!-- Update Form -->
 <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
     <form method="post">
         {{ form.hidden_tag() }}
 
         {{ form.name.label(class="form-label") }}
-        {{ form.name(class="form-control", placeholder=user_to_update.name) }}
+        {{ form.name(class="form-control", value=user_to_update.name) }}
         <br>
         {{ form.email.label(class="form-label") }}
-        {{ form.email(class="form-control", placeholder=user_to_update.email) }}
+        {{ form.email(class="form-control", value=user_to_update.email) }}
         <br>
         {{ form.submit(class="btn btn-secondary") }}
 

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, EmailField    # EmailField, PasswordField
-from wtforms.validators import DataRequired     # Length
+from wtforms.validators import DataRequired, Length
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -22,14 +22,21 @@ class Users(db.Model):
     email = db.Column(db.String(120), nullable=False, unique=True)
     date_added = db.Column(db.DateTime, default=datetime.now)
 
+    # A way to add a constraint at the db level would need - 
+        # from sqlalchemy import CheckConstraint
+    """__table_args__ = (
+        CheckConstraint("length(name) <= 200", name="check_name_length"),
+    )
+    """
+
     def __repr__(self):
         return '<Name %r>' % self.name
 
 
 # Add User Form
 class UserForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    email = EmailField('Email', validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired(), Length(max=200)])
+    email = EmailField('Email', validators=[DataRequired(), Length(max=120)])
     # password = PasswordField('Password', validators=[Length(min=6, max=16), DataRequired()]) # 6 - 12 digit pass
     submit = SubmitField('Submit')
 
@@ -103,17 +110,17 @@ def add_user():
 def update(id):
     form = UserForm()
     user_to_update = Users.query.get_or_404(id)
-    if request == "POST":
+    if request.method == "POST":
         # Updating from values from the template
         user_to_update.name = request.form["name"]
         user_to_update.email = request.form["email"]
         try:
             db.session.commit()
             flash("User Updated Successfully!!!")
-            redirect(url_for(add_user))
+            return redirect(url_for("add_user"))
         except:
             flash("User Update Failed!!! Try Again...")
-            redirect(url_for(add_user))
+            return redirect(url_for("add_user"))
     else:
         return render_template("update.html", 
                                form=form, 
