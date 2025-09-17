@@ -19,9 +19,10 @@
         {{ form.email(class="form-control", value=user_to_update.email) }}
         <br>
         {{ form.fav_color.label(class="form-label") }}
-        {{ form.fav_color(class="form-control", value=user_to_update.email) }}
+        {{ form.fav_color(class="form-control", value=user_to_update.fav_color) }}
         <br>
         {{ form.submit(class="btn btn-secondary") }}
+        <a href="{{ url_for('delete', id=id) }}" class="btn btn-danger">DELETE</a>
 
     </form>
 </div>

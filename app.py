@@ -130,4 +130,18 @@ def update(id):
     else:
         return render_template("update.html", 
                                form=form, 
+                               id=id,
                                user_to_update=user_to_update)
+    
+# Removing a user from db
+@app.route("/delete/<int:id>")
+def delete(id):
+    user_to_delete = Users.query.get_or_404(id)
+    try:
+        db.session.delete(user_to_delete)
+        db.session.commit()
+        flash("User Deleted Successfully!!!")
+        return redirect(url_for("add_user"))
+    except:
+        flash("Failed to delete user! Try again...")
+        return redirect(url_for("add_user"))
