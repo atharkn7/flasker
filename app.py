@@ -1,9 +1,10 @@
+from datetime import datetime
 from flask import Flask, render_template, flash, redirect, url_for, request
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, EmailField    # EmailField, PasswordField
 from wtforms.validators import DataRequired, Length
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 
 
 # Initializing the app
@@ -14,12 +15,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' # Database
 
 # Initializing the DB
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # DB Model
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)
+    fav_color = db.Column(db.String(120))
     date_added = db.Column(db.DateTime, default=datetime.now)
 
     # A way to add a constraint at the db level would need - 
@@ -38,6 +41,7 @@ class UserForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(max=200)])
     email = EmailField('Email', validators=[DataRequired(), Length(max=120)])
     # password = PasswordField('Password', validators=[Length(min=6, max=16), DataRequired()]) # 6 - 12 digit pass
+    fav_color = StringField('Favorite Color', validators=[Length(max=120)])
     submit = SubmitField('Submit')
 
 
@@ -91,7 +95,8 @@ def add_user():
 
         if user is None:    # if no existing users
             user = Users(name=form.name.data, 
-                         email=form.email.data)
+                         email=form.email.data,
+                         fav_color=form.fav_color.data)
             db.session.add(user)
             db.session.commit()
             flash("User Added Successfully!")
@@ -114,6 +119,7 @@ def update(id):
         # Updating from values from the template
         user_to_update.name = request.form["name"]
         user_to_update.email = request.form["email"]
+        user_to_update.fav_color = request.form["fav_color"]
         try:
             db.session.commit()
             flash("User Updated Successfully!!!")

@@ -30,6 +30,9 @@
         {{ form.email.label(class="form-label") }}
         {{ form.email(class="form-control") }}
         <br>
+        {{ form.fav_color.label(class="form-label") }}
+        {{ form.fav_color(class="form-control") }}
+        <br>
         {{ form.submit(class="btn btn-secondary") }}
 
     </form>
@@ -42,12 +45,14 @@
         <th>Id</th>
         <th>Name</th>
         <th>Email</th>
+        <th>Favorite Color</th>
     </tr>
     {% for user in our_users %}
     <tr>
         <td>{{user.id}}.</td>
         <td> <a href="{{ url_for('update', id=user.id) }}">{{user.name}}</a></td>
         <td>{{user.email}}</td>
+        <td>{{user.fav_color}}</td>
     </tr>
     {% endfor %}
 </table>
