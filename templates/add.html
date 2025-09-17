@@ -46,7 +46,6 @@
         <th>Name</th>
         <th>Email</th>
         <th>Favorite Color</th>
-        <th>Delete</th>
     </tr>
     {% for user in our_users %}
     <tr>
@@ -54,7 +53,6 @@
         <td> <a href="{{ url_for('update', id=user.id) }}">{{user.name}}</a></td>
         <td>{{user.email}}</td>
         <td>{{user.fav_color}}</td>
-        <td><a href="{{ url_for('delete', id=user.id) }}">X</a></td>
     </tr>
     {% endfor %}
 </table>
