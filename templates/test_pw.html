@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+
+{% block body %}
+
+{% if email %}
+<!-- To show if user has already entered form information -->
+<div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+    <h2 class="font-monospace"> User information found - </h2>
+    <hr>
+    <ul>
+        <li> Name: <strong> {{ user_to_check.name }} </strong> </li>
+        <li> Email: <strong> {{ user_to_check.email }} </strong> </li>
+        <li> Password: <strong class="font-monospace text-break">{{ user_to_check.password_hash }}</strong> </li>
+        <br>
+        <li> Password Match: <strong>{{ passed }}</strong> </li>
+    </ul>
+</div>
+
+{% else %}
+<h1> Login Page </h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+
+    {{ form.email.label(class="form-label") }}
+    {{ form.email(class="form-control") }}
+    <br>
+    {{ form.password.label(class="form-label") }}
+    {{ form.password(class="form-control") }}
+    <br>
+    {{ form.submit(class="btn btn-secondary") }}
+
+</form>
+{% endif %}
+
+
+{% endblock %}

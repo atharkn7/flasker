@@ -62,6 +62,13 @@ class UserForm(FlaskForm):
 
 
 # User login Form
+class TestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+# User login Form
 class NamerForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     submit = SubmitField('Submit')
@@ -169,3 +176,34 @@ def delete(id):
     except:
         flash("Failed to delete user! Try again...")
         return redirect(url_for("add_user"))
+
+# Test Password Page
+@app.route("/test_pw", methods=["GET", "POST"])
+def test_pw():
+    form = TestForm()
+    email = None 
+    password = None
+    user_to_check = None
+    passed = None
+
+    # Will validate only if data entered and submitted
+    if form.validate_on_submit():
+        # Assigning values
+        email = form.email.data
+        password = form.password.data
+
+        """ Another form of logic where form submission is checked through a value being NULL
+        # form.email.data = ''
+        # form.password.data = ''
+        """
+        
+        # Querying db to check if email exists
+        user_to_check = Users.query.filter_by(email=email).first()
+
+        # Checking if entered pass matches existing pass
+        passed = check_password_hash(user_to_check.password_hash, password)
+
+        if user_to_check:
+            return render_template("test_pw.html", form=form, email=email, user_to_check=user_to_check, passed=passed)
+    
+    return render_template("test_pw.html", form=form, email=email)
