@@ -4,7 +4,7 @@
 
 <!-- Heading -->
 <div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-    <h1 class="font-monospace" style="text-align: center;"> Add User </h1>
+    <h2 class="font-monospace" style="text-align: center;"> Add User </h2>
 </div>
 
 <!-- Add User Form -->
@@ -14,12 +14,18 @@
 
         {{ form.name.label(class="form-label") }}
         {{ form.name(class="form-control") }}
-        <br>
+
         {{ form.email.label(class="form-label") }}
         {{ form.email(class="form-control") }}
         <br>
         {{ form.fav_color.label(class="form-label") }}
         {{ form.fav_color(class="form-control") }}
+        <br>
+        {{ form.password.label(class="form-label") }}
+        {{ form.password(class="form-control") }}
+
+        {{ form.password2.label(class="form-label") }}
+        {{ form.password2(class="form-control") }}
         <br>
         {{ form.submit(class="btn btn-secondary") }}
 
@@ -46,6 +52,7 @@
         <th>Name</th>
         <th>Email</th>
         <th>Favorite Color</th>
+        <th>Password</th> <!-- TO BE REMOVED -->
     </tr>
     {% for user in our_users %}
     <tr>
@@ -53,6 +60,7 @@
         <td> <a href="{{ url_for('update', id=user.id) }}">{{user.name}}</a></td>
         <td>{{user.email}}</td>
         <td>{{user.fav_color}}</td>
+        <td>{{user.password_hash}}</td>
     </tr>
     {% endfor %}
 </table>

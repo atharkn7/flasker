@@ -3,8 +3,8 @@ from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, EmailField    # EmailField, PasswordField
-from wtforms.validators import DataRequired, Length
+from wtforms import StringField, SubmitField, EmailField, PasswordField, BooleanField, ValidationError
+from wtforms.validators import DataRequired, Length, EqualTo
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -55,8 +55,9 @@ class Users(db.Model):
 class UserForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(max=200)])
     email = EmailField('Email', validators=[DataRequired(), Length(max=120)])
-    # password = PasswordField('Password', validators=[Length(min=6, max=16), DataRequired()]) # 6 - 12 digit pass
     fav_color = StringField('Favorite Color', validators=[Length(max=120)])
+    password = PasswordField('Password', validators=[Length(min=6, max=16), DataRequired(), EqualTo('password2', message='Passwords must match!')])
+    password2 = PasswordField('Confirm Password', validators=[Length(min=6, max=16), DataRequired()]) 
     submit = SubmitField('Submit')
 
 
@@ -109,11 +110,19 @@ def add_user():
         user = Users.query.filter_by(email=form.email.data).first() # Checking if current email exists
 
         if user is None:    # if no existing users
+            # Hashing Pass
+            hashed_pw = generate_password_hash(form.password.data)
+
+            # Updating user with values from form
             user = Users(name=form.name.data, 
                          email=form.email.data,
-                         fav_color=form.fav_color.data)
+                         fav_color=form.fav_color.data,
+                         password_hash=hashed_pw)
+            
+            # Commiting to DB
             db.session.add(user)
             db.session.commit()
+
             flash("User Added Successfully!")
             return redirect(url_for("add_user"))
         
