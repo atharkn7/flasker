@@ -44,15 +44,14 @@
 {% endif %}
 {% endwith %}
 
-<br>
-
-<table class="table table-striped table-hover table-bordered ">
+<!-- Users Tables -->
+<table class="table table-striped table-hover table-bordered table align-middle" style="text-align: center;">
     <tr class="table-dark">
         <th>Id</th>
         <th>Name</th>
         <th>Email</th>
         <th>Favorite Color</th>
-        <th>Password</th> <!-- TO BE REMOVED -->
+        <th></th> <!-- TO BE REMOVED -->
     </tr>
     {% for user in our_users %}
     <tr>
@@ -60,7 +59,7 @@
         <td> <a href="{{ url_for('update', id=user.id) }}">{{user.name}}</a></td>
         <td>{{user.email}}</td>
         <td>{{user.fav_color}}</td>
-        <td>{{user.password_hash}}</td>
+        <td><a href="{{ url_for('delete', id=user.id) }}" class="btn btn-danger btn-sm">DELETE</a></td>
     </tr>
     {% endfor %}
 </table>

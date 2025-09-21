@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, EmailField, PasswordField, BooleanField, ValidationError
+from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired, Length, EqualTo
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -18,7 +19,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' # Database
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# DB Model
+""" MODELS """
+# Users Model
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
@@ -50,7 +52,16 @@ class Users(db.Model):
     def __repr__(self):
         return '<Name %r>' % self.name
 
+# Post Model
+class Posts(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    author = db.Column(db.String(255), nullable=False)
+    slug = db.Column(db.String(255), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    date_posted = db.Column(db.DateTime, default=datetime.now)
 
+""" FORMS """
 # Add User Form
 class UserForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(max=200)])
@@ -60,19 +71,27 @@ class UserForm(FlaskForm):
     password2 = PasswordField('Confirm Password', validators=[Length(min=6, max=16), DataRequired()]) 
     submit = SubmitField('Submit')
 
-
 # User login Form
 class TestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
-
-# User login Form
+# Naming Form
 class NamerForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+# Posts Form
+class PostForm(FlaskForm):
+    title = StringField("Title", validators=[DataRequired()])
+    author = StringField("Author", validators=[DataRequired()])
+    slug = StringField("Slug", validators=[DataRequired()])
+    content = StringField("Content", validators=[DataRequired()], widget=TextArea())
+    submit = SubmitField("Submit")
+
+
+""" ROUTES """
 # Main page
 @app.route("/")
 def index():
@@ -82,7 +101,8 @@ def index():
                            title = title, 
                            toppings = toppings)
 
-# Error Pages
+
+""" ERROR PAGES """
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html")
@@ -106,6 +126,8 @@ def user():
     else:
         return render_template("user.html", form=form, name=name)
     
+
+""" USER MANAGEMENT """
 # Add User Page (Shows how to add to DB)
 @app.route("/user/add", methods=["GET", "POST"])
 def add_user():
@@ -177,6 +199,7 @@ def delete(id):
         flash("Failed to delete user! Try again...")
         return redirect(url_for("add_user"))
 
+""" TEST/TRY PAGES """
 # Test Password Page
 @app.route("/test_pw", methods=["GET", "POST"])
 def test_pw():
@@ -207,3 +230,33 @@ def test_pw():
             return render_template("test_pw.html", form=form, email=email, user_to_check=user_to_check, passed=passed)
     
     return render_template("test_pw.html", form=form, email=email)
+
+# JSON Page
+@app.route("/test_date")
+def test_date():
+    return {"Date: ": datetime.now()}
+
+""" BLOG CRUD OPERATIONS """
+# Creating a Blog Post
+@app.route("/add-post", methods=["GET", "POST"])
+def add_post():
+    form = PostForm()
+
+    if form.validate_on_submit():
+        # Creating a new post
+        post = Posts(title=form.title.data, 
+                     author=form.author.data, 
+                     slug=form.slug.data, 
+                     content=form.content.data)
+        
+        # Adding to db
+        db.session.add(post)
+        db.session.commit()
+
+        # Confirming user added & redirecting
+        flash("Blog posted successfully!")
+        return redirect("/add-post")    # Route to all posts once created ***VERY IMP***
+    
+    return render_template("add-post.html", form=form)
+
+# Reading the Blog
