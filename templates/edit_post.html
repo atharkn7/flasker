@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+
+{% block body %}
+
+<!-- Heading -->
+<div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+    <h2 class="font-monospace" style="text-align: center;"> Edit BLOG... </h2>
+</div>
+
+<!-- Add User Form -->
+<div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+    <form method="post">
+        {{ form.hidden_tag() }}
+
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control") }}
+        <br>
+        {{ form.author.label(class="form-label") }}
+        {{ form.author(class="form-control") }}
+        <br>
+        {{ form.slug.label(class="form-label") }}
+        {{ form.slug(class="form-control") }}
+        <br>
+        {{ form.content.label(class="form-label") }}
+        {{ form.content(class="form-control", rows="5") }}
+        <br>
+        <a href="{{url_for('posts')}}" class="btn btn-outline-secondary btn-sm ">Back</a>
+        {{ form.submit(class="btn btn-outline-secondary btn-sm") }}
+        <!-- <a href="{{url_for('delete_posts', id=id)}}" class="btn btn-outline-danger btn-sm">DELETE</a> -->
+    </form>
+
+    <br>
+    <!-- Modified to use POST method and ask confirmation | Also seperate form as nested forms not possible in HTML-->
+    <form action="{{ url_for('delete_posts', id=id) }}" method="POST" style="display:inline;">
+        {{ form.hidden_tag() }}
+        <button type="submit" class="btn btn-outline-danger btn-sm "
+            onclick="return confirm('Are you sure you want to delete this post?')">
+            DELETE
+        </button>
+    </form>
+</div>
+
+{% endblock %}

@@ -255,19 +255,82 @@ def add_post():
 
         # Confirming user added & redirecting
         flash("Blog posted successfully!")
-        return redirect("/posts")
+        # Good practice to use url_for() instead of hardcoding
+        return redirect(url_for("posts"))   
     
-    return render_template("add-post.html", form=form)
+    return render_template("add_post.html", form=form)
 
 # READ - All Blogs
 @app.route("/posts")
 def posts():
     # Getting all posts
-    posts = Posts.query.order_by(Posts.date_posted)
-    return render_template("posts.html", posts=posts)
+    form = PostForm()
+    posts = Posts.query.order_by(Posts.date_posted.desc()).all()
+    return render_template("posts.html", posts=posts, form=form)
 
 # READ - Individual blog
 @app.route("/posts/<int:id>")
 def post(id):
     post = Posts.query.get_or_404(id)
     return render_template("post.html", post=post)
+
+# UPDATE - Blog Post
+@app.route("/posts/edit/<int:id>", methods=["GET", "POST"])
+def edit_posts(id):
+    # Getting form and model
+    post_to_update = Posts.query.get_or_404(id)
+    form = PostForm()
+    # form = PostForm(obj=post_to_update)   # Pre-fills form with existing values
+        
+    
+    # POST workflow
+    if form.validate_on_submit():
+        # Updating Post (can be automated with populate_obj line below)
+        post_to_update.title = form.title.data
+        post_to_update.author = form.author.data
+        post_to_update.slug = form.slug.data
+        post_to_update.content = form.content.data
+        # form.populate_obj(post_to_update)     # Automatically assigns form data to model fields 
+
+        # Updating db
+        db.session.commit()
+
+        # Confirming and redirecting
+        flash("Blog post edited successfully!")
+        return redirect(url_for("posts"))
+    
+    # Adding values to form (can be automated with pre-fills line)
+    form.title.data = post_to_update.title
+    form.author.data = post_to_update.author
+    form.slug.data = post_to_update.slug
+    form.content.data = post_to_update.content
+
+    return render_template("edit_post.html", form=form, id=id)
+
+# DELETE - Blog Post 
+""" Changed to POST as GET should only be used in read-only ops"""
+@app.route("/posts/delete/<int:id>", methods=["POST"])
+def delete_posts(id):
+    post_to_delete = Posts.query.get_or_404(id)
+    try:
+        # Deleting selected user
+        db.session.delete(post_to_delete)
+        db.session.commit()
+
+        # Confirm & redirect
+        flash("Blog post deleted successfully!")
+        return redirect(url_for("posts"))
+    except:
+        flash("Failed post deletion! Try again...")
+        # db.session.rollback()     # Clear failed transaction and resets the session
+        return redirect(url_for("posts"))
+    
+"""
+Best practice in production:
+    1. Wrap all commits in 
+        1a. try/except 
+        1b. SQLAlchemyError).
+    2. Rollback on failure.
+    3. Log the exact error for debugging, but show a clean flash to the user
+        3a. DELETE is most likely to fail, maybe a post is referenced by another table
+"""
