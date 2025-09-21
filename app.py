@@ -237,7 +237,7 @@ def test_date():
     return {"Date: ": datetime.now()}
 
 """ BLOG CRUD OPERATIONS """
-# Creating a Blog Post
+# CREATE Blog Post
 @app.route("/add-post", methods=["GET", "POST"])
 def add_post():
     form = PostForm()
@@ -255,8 +255,19 @@ def add_post():
 
         # Confirming user added & redirecting
         flash("Blog posted successfully!")
-        return redirect("/add-post")    # Route to all posts once created ***VERY IMP***
+        return redirect("/posts")
     
     return render_template("add-post.html", form=form)
 
-# Reading the Blog
+# READ - All Blogs
+@app.route("/posts")
+def posts():
+    # Getting all posts
+    posts = Posts.query.order_by(Posts.date_posted)
+    return render_template("posts.html", posts=posts)
+
+# READ - Individual blog
+@app.route("/posts/<int:id>")
+def post(id):
+    post = Posts.query.get_or_404(id)
+    return render_template("post.html", post=post)

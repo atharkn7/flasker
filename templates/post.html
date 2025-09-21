@@ -1,0 +1,20 @@
+{% extends "index.html" %}
+
+{% block body %}
+
+<!-- Heading -->
+<div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+    <h2 class="font-monospace" style="text-align: center;"> FLASKER Blogs... </h2>
+</div>
+
+<div class="shadow p-3 mb-2 bg-body-tertiary rounded">
+    <h2><strong>{{ post.title }} </strong><br></h2>
+    <hr>
+    <small> Author: {{ post.author }}</small> <strong> | </strong>
+    <small> Date Posted: {{ post.date_posted }} </small>
+    <p> Content: {{ post.content }} </p><br>
+    <a href="{{url_for('posts')}}" class="btn btn-outline-secondary btn-sm">Back</a>
+</div>
+
+
+{% endblock %}
