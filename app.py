@@ -328,8 +328,7 @@ def delete_posts(id):
         # db.session.rollback()     # Clear failed transaction and resets the session
         return redirect(url_for("posts"))
     
-"""
-Best practice in production:
+""" Best practice in production:
     1. Wrap all commits in 
         1a. try/except 
         1b. SQLAlchemyError).
