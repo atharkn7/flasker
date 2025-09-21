@@ -11,21 +11,33 @@
 <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
     <form method="post">
         {{ form.hidden_tag() }}
-
-        {{ form.name.label(class="form-label") }}
-        {{ form.name(class="form-control") }}
-
-        {{ form.email.label(class="form-label") }}
-        {{ form.email(class="form-control") }}
+        <!-- Added visual rows with bootstrap -->
+        <div class="row">
+            <div class="col-md-4">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+            <div class="col-md-4">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control") }}
+            </div>
+            <div class="col-md-4">
+                {{ form.fav_color.label(class="form-label") }}
+                {{ form.fav_color(class="form-control") }}
+            </div>
+        </div>
         <br>
-        {{ form.fav_color.label(class="form-label") }}
-        {{ form.fav_color(class="form-control") }}
-        <br>
-        {{ form.password.label(class="form-label") }}
-        {{ form.password(class="form-control") }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+                {{ form.password2.label(class="form-label") }}
+                {{ form.password2(class="form-control") }}
+            </div>
+        </div>
 
-        {{ form.password2.label(class="form-label") }}
-        {{ form.password2(class="form-control") }}
         <br>
         {{ form.submit(class="btn btn-secondary") }}
 
