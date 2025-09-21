@@ -263,8 +263,11 @@ def add_post():
 # READ - All Blogs
 @app.route("/posts")
 def posts():
-    # Getting all posts
+    # Adding form to allow deletion 
+        # Ideally this should be a seperate delete form to handle this
     form = PostForm()
+    
+    # Getting all posts
     posts = Posts.query.order_by(Posts.date_posted.desc()).all()
     return render_template("posts.html", posts=posts, form=form)
 
