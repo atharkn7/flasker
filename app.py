@@ -22,6 +22,15 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # Flask Logic Configuration
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+# Loading users from Users model
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(int(user_id))
+
 
 """ MODELS """
 # Users Model
@@ -78,8 +87,8 @@ class UserForm(FlaskForm):
     submit = SubmitField('Submit')
 
 # User login Form
-class TestForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired()])
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
@@ -207,12 +216,59 @@ def delete(id):
         flash("Failed to delete user! Try again...")
         return redirect(url_for("add_user"))
 
+
+""" LOGIN MANAGEMENT """
+# Login Route
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form=LoginForm()
+    # Validating form submission
+    if form.validate_on_submit():
+        # Querying db
+        user = Users.query.filter_by(username=form.username.data).first()
+        # Validating username
+        if user:
+            # Validating password
+            if check_password_hash(user.password_hash, form.password.data):
+                
+                # Logging in USER
+                login_user(user)
+                flash("Logged in successfully!")
+                return redirect(url_for("dashboard"))
+            else:
+                # redirect not needed for errors as user is staying on the same page
+                flash("Incorrect password! Try again...")
+        
+        # Logic for no username found 
+        else: 
+            flash("Username not found! Try again...")
+
+    # GET workflow
+    return render_template("login.html", form=form)
+
+# Dashboard/login page
+@app.route("/dashboard")
+@login_required 
+def dashboard():
+    # Don't need to send model to template
+        # current_user() has all that saved
+    return render_template("dashboard.html")
+
+# Logout route
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()   # Logs out current user
+    flash("Logged out successfully!")
+    return redirect(url_for("login"))
+
+
 """ TEST/TRY PAGES """
 # Test Password Page
 @app.route("/test_pw", methods=["GET", "POST"])
 def test_pw():
-    form = TestForm()
-    email = None 
+    form = LoginForm()
+    username = None 
     password = None
     user_to_check = None
     passed = None
@@ -220,7 +276,7 @@ def test_pw():
     # Will validate only if data entered and submitted
     if form.validate_on_submit():
         # Assigning values
-        email = form.email.data
+        username = form.username.data
         password = form.password.data
 
         """ Another form of logic where form submission is checked through a value being NULL
@@ -229,20 +285,27 @@ def test_pw():
         """
         
         # Querying db to check if email exists
-        user_to_check = Users.query.filter_by(email=email).first()
-
-        # Checking if entered pass matches existing pass
-        passed = check_password_hash(user_to_check.password_hash, password)
+        user_to_check = Users.query.filter_by(username=username).first()
 
         if user_to_check:
-            return render_template("test_pw.html", form=form, email=email, user_to_check=user_to_check, passed=passed)
+            
+            # Checking if entered pass matches existing pass
+            passed = check_password_hash(user_to_check.password_hash, password)
+            
+            # Message and render
+            flash("User Found!")
+            return render_template("test_pw.html", form=form, username=username, user_to_check=user_to_check, passed=passed)
+        else:
+            flash("No user found!")
+            return redirect(url_for("test_pw"))
     
-    return render_template("test_pw.html", form=form, email=email)
+    return render_template("test_pw.html", form=form, username=username)
 
 # JSON Page
 @app.route("/test_date")
 def test_date():
     return {"Date: ": datetime.now()}
+
 
 """ BLOG CRUD OPERATIONS """
 # CREATE Blog Post
@@ -336,6 +399,7 @@ def delete_posts(id):
         # db.session.rollback()     # Clear failed transaction and resets the session
         return redirect(url_for("posts"))
     
+
 """ Best practice in production:
     1. Wrap all commits in 
         1a. try/except 

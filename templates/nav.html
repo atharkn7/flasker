@@ -8,22 +8,38 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('user') }}">Users</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('add_user') }}">Add User</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('test_pw') }}">Hash Test</a>
-                </li>
+                <!-- NAV OPTIONS -->
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('posts') }}">Blogs</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('add_post') }}">Post Blog</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('test_pw') }}">Hash Test</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user') }}">Namer</a>
+                </li>
 
+                {% if current_user.is_authenticated %}
+
+                <!-- Only logged in users can access -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                </li>
+
+                {% else %}
+
+                <!-- Anyone can access -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('add_user') }}">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                </li>
+
+                {% endif %}
 
             </ul>
             <form class="d-flex" role="search">

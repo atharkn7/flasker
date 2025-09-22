@@ -2,7 +2,19 @@
 
 {% block body %}
 
-{% if email %}
+<!-- Alert Message -->
+{% with messages = get_flashed_messages() %} <!-- Correct way to check if there are any messages-->
+{% if messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor%}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+{% endwith %}
+
+{% if username %}
 <!-- To show if user has already entered form information -->
 <div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded">
     <h2 class="font-monospace"> User information found - </h2>
@@ -10,6 +22,7 @@
     <ul>
         <li> Name: <strong> {{ user_to_check.name }} </strong> </li>
         <li> Email: <strong> {{ user_to_check.email }} </strong> </li>
+        <li> Username: <strong> {{ user_to_check.username }} </strong> </li>
         <li> Password: <strong class="font-monospace text-break">{{ user_to_check.password_hash }}</strong> </li>
         <br>
         <li> Password Match: <strong>{{ passed }}</strong> </li>
@@ -17,12 +30,13 @@
 </div>
 
 {% else %}
-<h1> Login Page </h1>
+<h1> Test Page </h1>
+<br>
 <form method="post">
     {{ form.hidden_tag() }}
 
-    {{ form.email.label(class="form-label") }}
-    {{ form.email(class="form-control") }}
+    {{ form.username.label(class="form-label") }}
+    {{ form.username(class="form-control") }}
     <br>
     {{ form.password.label(class="form-label") }}
     {{ form.password(class="form-control") }}

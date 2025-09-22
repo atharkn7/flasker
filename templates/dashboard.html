@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+
+{% block body %}
+
+<!-- Heading -->
+<div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+    <h2 class="font-monospace" style="text-align: center;"> Dashboard </h2>
+</div>
+
+<!-- Alert Message -->
+{% with messages = get_flashed_messages() %} <!-- Correct way to check if there are any messages-->
+{% if messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor%}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-light fw-bold">
+        {{ current_user.name }}'s Dashboard
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Welcome, {{ current_user.name }}!</h5>
+        <hr>
+        <ul class="list-unstyled mb-3">
+            <li><strong>Username:</strong> {{ current_user.username }}</li>
+            <li><strong>Email:</strong> {{ current_user.email }}</li>
+            <li><strong>Favorite Color:</strong> {{ current_user.fav_color }}</li>
+            <li><strong>Date Joined:</strong> {{ current_user.date_added.strftime('%B %d, %Y') }}</li>
+            <!-- Fixing the date -->
+        </ul>
+    </div>
+    <div class="card-footer text-end"> <!-- Moving button to right -->
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Logout</a>
+    </div>
+</div>
+
+
+
+{% endblock %}
