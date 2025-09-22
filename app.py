@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import Flask, render_template, flash, redirect, url_for, request
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
@@ -9,6 +10,7 @@ from wtforms.validators import DataRequired, Length, EqualTo
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
+""" CONFIG """
 # Initializing the app
 app = Flask(__name__)
 # App Configurations
@@ -19,10 +21,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' # Database
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+# Flask Logic Configuration
+
 """ MODELS """
 # Users Model
-class Users(db.Model):
+class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), nullable=False, unique=True)
     name = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)
     fav_color = db.Column(db.String(120))
@@ -66,6 +71,7 @@ class Posts(db.Model):
 class UserForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(max=200)])
     email = EmailField('Email', validators=[DataRequired(), Length(max=120)])
+    username = StringField('Username', validators=[DataRequired()])
     fav_color = StringField('Favorite Color', validators=[Length(max=120)])
     password = PasswordField('Password', validators=[Length(min=6, max=16), DataRequired(), EqualTo('password2', message='Passwords must match!')])
     password2 = PasswordField('Confirm Password', validators=[Length(min=6, max=16), DataRequired()]) 
@@ -145,6 +151,7 @@ def add_user():
             # Updating user with values from form
             user = Users(name=form.name.data, 
                          email=form.email.data,
+                         username=form.username.data,
                          fav_color=form.fav_color.data,
                          password_hash=hashed_pw)
             
@@ -172,6 +179,7 @@ def update(id):
         # Updating from values from the template
         user_to_update.name = request.form["name"]
         user_to_update.email = request.form["email"]
+        user_to_update.username = request.form["username"]
         user_to_update.fav_color = request.form["fav_color"]
         try:
             db.session.commit()

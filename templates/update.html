@@ -11,20 +11,34 @@
 <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
     <form method="post">
         {{ form.hidden_tag() }}
-
-        {{ form.name.label(class="form-label") }}
-        {{ form.name(class="form-control", value=user_to_update.name) }}
+        <!-- Added visual rows with bootstrap -->
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control", value=user_to_update.username) }}
+            </div>
+            <div class="col-md-6">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control", value=user_to_update.email) }}
+            </div>
+        </div>
         <br>
-        {{ form.email.label(class="form-label") }}
-        {{ form.email(class="form-control", value=user_to_update.email) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control", value=user_to_update.name) }}
+            </div>
+            <div class="col-md-6">
+                {{ form.fav_color.label(class="form-label") }}
+                {{ form.fav_color(class="form-control", value=user_to_update.fav_color) }}
+            </div>
+        </div>
         <br>
-        {{ form.fav_color.label(class="form-label") }}
-        {{ form.fav_color(class="form-control", value=user_to_update.fav_color) }}
+        <hr>
         <br>
-        {{ form.submit(class="btn btn-secondary") }}
-        <a href="{{ url_for('delete', id=id) }}" class="btn btn-danger">DELETE</a>
-
-    </form>
+        {{ form.submit(class="btn btn-outline-secondary btn-sm") }}
+        <a href="{{ url_for('add_user') }}" class="btn btn-outline-secondary btn-sm">Back</a>
+        <a href="{{ url_for('delete', id=id) }}" class="btn btn-outline-danger btn-sm">DELETE</a>
 </div>
 
 {% endblock %}

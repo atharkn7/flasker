@@ -13,15 +13,22 @@
         {{ form.hidden_tag() }}
         <!-- Added visual rows with bootstrap -->
         <div class="row">
-            <div class="col-md-4">
-                {{ form.name.label(class="form-label") }}
-                {{ form.name(class="form-control") }}
+            <div class="col-md-6">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control") }}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 {{ form.email.label(class="form-label") }}
                 {{ form.email(class="form-control") }}
             </div>
-            <div class="col-md-4">
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+            <div class="col-md-6">
                 {{ form.fav_color.label(class="form-label") }}
                 {{ form.fav_color(class="form-control") }}
             </div>
@@ -37,10 +44,8 @@
                 {{ form.password2(class="form-control") }}
             </div>
         </div>
-
         <br>
-        {{ form.submit(class="btn btn-secondary") }}
-
+        {{ form.submit(class="btn btn-outline-secondary") }}
     </form>
 </div>
 
@@ -61,17 +66,19 @@
     <tr class="table-dark">
         <th>Id</th>
         <th>Name</th>
+        <th>Username</th>
         <th>Email</th>
         <th>Favorite Color</th>
-        <th></th> <!-- TO BE REMOVED -->
+        <th>Delete</th> <!-- TO BE REMOVED -->
     </tr>
     {% for user in our_users %}
     <tr>
         <td>{{user.id}}.</td>
         <td> <a href="{{ url_for('update', id=user.id) }}">{{user.name}}</a></td>
+        <td>{{ user.username }}</td>
         <td>{{user.email}}</td>
         <td>{{user.fav_color}}</td>
-        <td><a href="{{ url_for('delete', id=user.id) }}" class="btn btn-danger btn-sm">DELETE</a></td>
+        <td><a href="{{ url_for('delete', id=user.id) }}" class="btn btn-outline-danger btn-sm">X</a></td>
     </tr>
     {% endfor %}
 </table>
