@@ -3,10 +3,7 @@ from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, EmailField, PasswordField, BooleanField, ValidationError
-from wtforms.widgets import TextArea
-from wtforms.validators import DataRequired, Length, EqualTo
+from webforms import UserForm, PostForm, NamerForm, LoginForm
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -74,36 +71,6 @@ class Posts(db.Model):
     slug = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.DateTime, default=datetime.now)
-
-""" FORMS """
-# Add User Form
-class UserForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(max=200)])
-    email = EmailField('Email', validators=[DataRequired(), Length(max=120)])
-    username = StringField('Username', validators=[DataRequired()])
-    fav_color = StringField('Favorite Color', validators=[Length(max=120)])
-    password = PasswordField('Password', validators=[Length(min=6, max=16), DataRequired(), EqualTo('password2', message='Passwords must match!')])
-    password2 = PasswordField('Confirm Password', validators=[Length(min=6, max=16), DataRequired()]) 
-    submit = SubmitField('Submit')
-
-# User login Form
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-
-# Naming Form
-class NamerForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-
-# Posts Form
-class PostForm(FlaskForm):
-    title = StringField("Title", validators=[DataRequired()])
-    author = StringField("Author", validators=[DataRequired()])
-    slug = StringField("Slug", validators=[DataRequired()])
-    content = StringField("Content", validators=[DataRequired()], widget=TextArea())
-    submit = SubmitField("Submit")
 
 
 """ ROUTES """
@@ -251,19 +218,16 @@ def login():
 @login_required 
 def dashboard():
     # Don't need to send model to template current_user() has it 
-
     form = UserForm()
     user_to_update = Users.query.get_or_404(current_user.id)
 
     # POST Workflow
     if request.method == "POST":
         # Updating values 
-        print(user_to_update)
         user_to_update.username = form.username.data
         user_to_update.email = form.email.data
         user_to_update.name = form.name.data
         user_to_update.fav_color = form.fav_color.data
-        print(user_to_update)
         
         try:
             # DB commit
