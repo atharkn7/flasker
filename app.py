@@ -247,12 +247,37 @@ def login():
     return render_template("login.html", form=form)
 
 # Dashboard/login page
-@app.route("/dashboard")
+@app.route("/dashboard", methods=["GET", "POST"])
 @login_required 
 def dashboard():
-    # Don't need to send model to template
-        # current_user() has all that saved
-    return render_template("dashboard.html")
+    # Don't need to send model to template current_user() has it 
+
+    form = UserForm()
+    user_to_update = Users.query.get_or_404(current_user.id)
+
+    # POST Workflow
+    if request.method == "POST":
+        # Updating values 
+        print(user_to_update)
+        user_to_update.username = form.username.data
+        user_to_update.email = form.email.data
+        user_to_update.name = form.name.data
+        user_to_update.fav_color = form.fav_color.data
+        print(user_to_update)
+        
+        try:
+            # DB commit
+            db.session.commit()
+            flash("Updated Successfully!")
+            return redirect(url_for("dashboard"))
+        except:
+            flash("Update failed! Try again...")
+            return redirect(url_for("dashboard"))
+            
+    # GET workflow
+    # form.fav_color.data = user_to_update.fav_color
+
+    return render_template("dashboard.html", form=form, user_to_update=user_to_update)
 
 # Logout route
 @app.route("/logout")

@@ -19,12 +19,13 @@
 {% endif %}
 {% endwith %}
 
+<!-- User info -->
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-light fw-bold">
         {{ current_user.name }}'s Dashboard
     </div>
     <div class="card-body">
-        <h5 class="card-title">Welcome, {{ current_user.name }}!</h5>
+        <h5 class="card-title">Welcome!</h5>
         <hr>
         <ul class="list-unstyled mb-3">
             <li><strong>Username:</strong> {{ current_user.username }}</li>
@@ -35,8 +36,51 @@
         </ul>
     </div>
     <div class="card-footer text-end"> <!-- Moving button to right -->
+
+        <!-- <a href="{{ url_for('update', id=current_user.id) }}" class="btn btn-outline-secondary btn-sm">Edit User</a> -->
+        <!-- For workflow consistency -->
+
         <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Logout</a>
     </div>
+</div>
+
+<!-- Edit User Info -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-light fw-bold">
+        Update Profile
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {{ form.hidden_tag() }}
+            <!-- Added visual rows with bootstrap -->
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form.username.label(class="form-label") }}
+                    {{ form.username(class="form-control", value=user_to_update.username) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control", value=user_to_update.email) }}
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control", value=user_to_update.name) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.fav_color.label(class="form-label") }}
+                    {{ form.fav_color(class="form-control", value=user_to_update.fav_color) }}
+                </div>
+            </div>
+            <br>
+    </div>
+    <div class="card-footer text-end"> <!-- Moving button to right -->
+        {{ form.submit(class="btn btn-outline-secondary btn-sm") }}
+        <a href="{{ url_for('delete', id=user_to_update.id) }}" class="btn btn-outline-danger btn-sm">Delete</a>
+    </div>
+    </form>
 </div>
 
 
