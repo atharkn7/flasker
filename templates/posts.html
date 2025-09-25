@@ -22,9 +22,9 @@
 {% for post in posts %}
 <div class="shadow p-3 mb-2 bg-body-tertiary rounded">
     <h4><strong>{{ post.title }} </strong><br></h4>
-    <small> Author: {{ post.author }}</small> <strong> | </strong>
-    <small> Date Posted: {{ post.date_posted }} </small>
-    <p> Content: {{ post.content }} </p><br>
+    <small> Author: {{ post.poster.name }} </small> <strong> | </strong>
+    <small> Date Posted: {{ post.date_posted.strftime('%B %d, %Y') }} </small>
+    <p> <small>Content: </small>{{ post.content }} </p><br>
     <a href="{{url_for('post', id=post.id)}}" class="btn btn-outline-secondary btn-sm">View Post</a>
     <a href="{{url_for('edit_posts', id=post.id)}}" class="btn btn-outline-secondary btn-sm">Edit Post</a>
     <!-- Modified to use POST method and ask confirmation -->

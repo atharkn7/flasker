@@ -39,6 +39,8 @@ class Users(db.Model, UserMixin):
     fav_color = db.Column(db.String(120))
     date_added = db.Column(db.DateTime, default=datetime.now)
     password_hash = db.Column(db.String(128), nullable=False)
+    # Users can have multiple posts (One to Many)
+    posts = db.relationship('Posts', backref='poster')
 
     # A way to add a constraint at the db level would need - 
         # from sqlalchemy import CheckConstraint
@@ -67,10 +69,11 @@ class Users(db.Model, UserMixin):
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
-    author = db.Column(db.String(255), nullable=False)
+    # author = db.Column(db.String(255), nullable=False)    # Removed
     slug = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.DateTime, default=datetime.now)
+    poster_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
 """ ROUTES """
@@ -300,15 +303,17 @@ def test_date():
 """ BLOG CRUD OPERATIONS """
 # CREATE Blog Post
 @app.route("/add-post", methods=["GET", "POST"])
+@login_required
 def add_post():
     form = PostForm()
+    poster = current_user.id    # To get who is posting
 
     if form.validate_on_submit():
         # Creating a new post
-        post = Posts(title=form.title.data, 
-                     author=form.author.data, 
+        post = Posts(title=form.title.data,  
                      slug=form.slug.data, 
-                     content=form.content.data)
+                     content=form.content.data, 
+                     poster_id=poster)
         
         # Adding to db
         db.session.add(post)
@@ -351,7 +356,6 @@ def edit_posts(id):
     if form.validate_on_submit():
         # Updating Post (can be automated with populate_obj line below)
         post_to_update.title = form.title.data
-        post_to_update.author = form.author.data
         post_to_update.slug = form.slug.data
         post_to_update.content = form.content.data
         # form.populate_obj(post_to_update)     # Automatically assigns form data to model fields 
@@ -365,7 +369,6 @@ def edit_posts(id):
     
     # Adding values to form (can be automated with pre-fills line)
     form.title.data = post_to_update.title
-    form.author.data = post_to_update.author
     form.slug.data = post_to_update.slug
     form.content.data = post_to_update.content
 
