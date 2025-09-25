@@ -37,7 +37,8 @@
     </div>
     <div class="card-footer text-end"> <!-- Moving button to right -->
 
-        <!-- <a href="{{ url_for('update', id=current_user.id) }}" class="btn btn-outline-secondary btn-sm">Edit User</a> -->
+        <a href="{{ url_for('update', id=current_user.id) }}" class="btn btn-outline-secondary btn-sm">Update / Delete
+            Profile</a>
         <!-- For workflow consistency -->
 
         <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Logout</a>
@@ -78,7 +79,8 @@
     </div>
     <div class="card-footer text-end"> <!-- Moving button to right -->
         {{ form.submit(class="btn btn-outline-secondary btn-sm") }}
-        <a href="{{ url_for('delete', id=user_to_update.id) }}" class="btn btn-outline-danger btn-sm">Delete</a>
+        <!-- Deletion only possible on Update Profile -->
+        <!-- <a href="{{ url_for('delete', id=user_to_update.id) }}" class="btn btn-outline-danger btn-sm">Delete</a> -->
     </div>
     </form>
 </div>

@@ -7,6 +7,7 @@
     <h1 class="font-monospace" style="text-align: center;"> Update User </h1>
 </div>
 
+{% if user_to_update.id == current_user.id %}
 <!-- Update Form -->
 <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
     <form method="post">
@@ -37,9 +38,23 @@
         <hr>
         <br>
         {{ form.submit(class="btn btn-outline-secondary btn-sm") }}
-        <a href="{{ url_for('add_user') }}" class="btn btn-outline-secondary btn-sm">Back</a>
+        <!-- <a href="{{ url_for('add_user') }}" class="btn btn-outline-secondary btn-sm">Back</a> -->
         <a href="{{ url_for('delete', id=id) }}" class="btn btn-outline-danger btn-sm">DELETE</a>
     </form>
 </div>
+
+{% else: %}
+
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <h3>You are not authorized to access this page!</h3>
+    <p> Kindly login as relevant user...</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<!-- Wrong user can logout -->
+<a href="{{ url_for('logout') }}" class="btn btn-outline-secondary btn-sm">Logout</a>
+
+
+{% endif %}
 
 {% endblock %}
