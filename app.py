@@ -345,51 +345,64 @@ def post(id):
 
 # UPDATE - Blog Post
 @app.route("/posts/edit/<int:id>", methods=["GET", "POST"])
+@login_required
 def edit_posts(id):
     # Getting form and model
     post_to_update = Posts.query.get_or_404(id)
     form = PostForm()
     # form = PostForm(obj=post_to_update)   # Pre-fills form with existing values
+
+    if post_to_update.poster_id == current_user.id:
+        # POST workflow
+        if form.validate_on_submit():
+            # Updating Post (can be automated with populate_obj line below)
+            post_to_update.title = form.title.data
+            post_to_update.slug = form.slug.data
+            post_to_update.content = form.content.data
+            # form.populate_obj(post_to_update)     # Automatically assigns form data to model fields 
+
+            # Updating db
+            db.session.commit()
+
+            # Confirming and redirecting
+            flash("Blog post edited successfully!")
+            return redirect(url_for("posts"))
         
+        # Adding values to form (can be automated with pre-fills line)
+        form.title.data = post_to_update.title
+        form.slug.data = post_to_update.slug
+        form.content.data = post_to_update.content
+
+        return render_template("edit_post.html", form=form, id=id)
     
-    # POST workflow
-    if form.validate_on_submit():
-        # Updating Post (can be automated with populate_obj line below)
-        post_to_update.title = form.title.data
-        post_to_update.slug = form.slug.data
-        post_to_update.content = form.content.data
-        # form.populate_obj(post_to_update)     # Automatically assigns form data to model fields 
-
-        # Updating db
-        db.session.commit()
-
-        # Confirming and redirecting
-        flash("Blog post edited successfully!")
+    else:
+        flash("You are not authorized to edit this post! ")
         return redirect(url_for("posts"))
-    
-    # Adding values to form (can be automated with pre-fills line)
-    form.title.data = post_to_update.title
-    form.slug.data = post_to_update.slug
-    form.content.data = post_to_update.content
-
-    return render_template("edit_post.html", form=form, id=id)
 
 # DELETE - Blog Post 
 """ Changed to POST as GET should only be used in read-only ops"""
 @app.route("/posts/delete/<int:id>", methods=["POST"])
+@login_required
 def delete_posts(id):
     post_to_delete = Posts.query.get_or_404(id)
-    try:
-        # Deleting selected user
-        db.session.delete(post_to_delete)
-        db.session.commit()
+    poster_id = current_user.id
 
-        # Confirm & redirect
-        flash("Blog post deleted successfully!")
-        return redirect(url_for("posts"))
-    except:
-        flash("Failed post deletion! Try again...")
-        # db.session.rollback()     # Clear failed transaction and resets the session
+    # Checking if current user is the same as poster
+    if poster_id == post_to_delete.poster_id:    
+        try:
+            # Deleting selected user
+            db.session.delete(post_to_delete)
+            db.session.commit()
+
+            # Confirm & redirect
+            flash("Blog post deleted successfully!")
+            return redirect(url_for("posts"))
+        except:
+            flash("Failed post deletion! Try again...")
+            # db.session.rollback()     # Clear failed transaction and resets the session
+            return redirect(url_for("posts"))
+    else:
+        flash("You are not authorized to delete this post!")
         return redirect(url_for("posts"))
     
 
