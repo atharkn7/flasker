@@ -19,11 +19,15 @@
         {{ form.slug(class="form-control") }}
         <br>
         {{ form.content.label(class="form-label") }}
-        {{ form.content(class="form-control", rows="5") }}
+        {{ form.content(class="form-control") }}
         <br>
         {{ form.submit(class="btn btn-outline-secondary btn-sm") }}
 
     </form>
+
+    <!-- Config CKEditor-->
+    {{ ckeditor.load(pkg_type="basic") }}
+    {{ ckeditor.config(name='content') }}
 </div>
 
 {% endblock %}

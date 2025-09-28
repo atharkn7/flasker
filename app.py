@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import Flask, render_template, flash, redirect, url_for, request
+from flask_ckeditor import CKEditor
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -13,6 +14,8 @@ app = Flask(__name__)
 # App Configurations
 app.config['SECRET_KEY'] = 'pass'   # Secret Key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' # Database
+# Rich Text Editor
+ckeditor = CKEditor(app)
 
 # Initializing the DB
 db = SQLAlchemy(app)

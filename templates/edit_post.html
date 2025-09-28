@@ -19,14 +19,19 @@
         {{ form.slug(class="form-control") }}
         <br>
         {{ form.content.label(class="form-label") }}
-        {{ form.content(class="form-control", rows="5") }}
+        {{ form.content(class="form-control") }}
         <br>
         {{ form.submit(class="btn btn-outline-secondary btn-sm me-2") }}
         <a href="{{url_for('posts')}}" class="btn btn-outline-secondary btn-sm me-2">Back to Blogs</a>
         <!-- <a href="{{url_for('delete_posts', id=id)}}" class="btn btn-outline-danger btn-sm">DELETE</a> -->
     </form>
 
+    <!-- Config CKEditor-->
+    {{ ckeditor.load(pkg_type="basic") }}
+    {{ ckeditor.config(name='content') }}
     <br>
+
+
     <!-- Modified to use POST method and ask confirmation | Also seperate form as nested forms not possible in HTML-->
     <form action="{{ url_for('delete_posts', id=id) }}" method="POST" style="display:inline;">
         {{ form.hidden_tag() }}

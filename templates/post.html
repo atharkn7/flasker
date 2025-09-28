@@ -12,7 +12,7 @@
     <hr>
     <small> Author: {{ post.poster.name }} </small> <strong> | </strong>
     <small> Date Posted: {{ post.date_posted.strftime('%B %d, %Y') }} </small>
-    <p> Content: {{ post.content }} </p><br>
+    <p> Content: {{ post.content|safe }} </p><br>
     <a href="{{url_for('posts')}}" class="btn btn-outline-secondary btn-sm">Back to Blogs</a>
 
     {% if post.poster_id==current_user.id %}
@@ -20,6 +20,5 @@
     <!--  <a href="{{url_for('delete_posts', id=post.id)}}" class="btn btn-outline-danger btn-sm">DELETE</a> -->
     {% endif %}
 </div>
-
 
 {% endblock %}
