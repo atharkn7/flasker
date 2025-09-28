@@ -3,7 +3,7 @@ from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from webforms import UserForm, PostForm, NamerForm, LoginForm
+from webforms import UserForm, PostForm, NamerForm, LoginForm, SearchForm
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -85,6 +85,14 @@ def index():
     return render_template("home.html", 
                            title = title, 
                            toppings = toppings)
+
+
+""" CONTEXT PROCESSOR """
+@app.context_processor
+def base():
+    # Global variable for all templates
+    form = SearchForm()
+    return dict(form=form)
 
 
 """ ERROR PAGES """
@@ -405,6 +413,24 @@ def delete_posts(id):
         flash("You are not authorized to delete this post!")
         return redirect(url_for("posts"))
     
+
+""" BLOG ACTIONS """
+# Search blog posts
+@app.route("/search", methods=["POST"])
+def search():
+    form = SearchForm()
+    post = Posts.query  # Getting all posts
+
+    if form.validate_on_submit():
+        
+        # Searching content field in DB
+        posts = post.filter(Posts.content.like('%'+form.searched.data+'%'))
+        posts = posts.order_by(Posts.title).all()
+
+        return render_template("search.html", form=form, posts=posts)
+
+    return render_template("search.html", form=form)
+
 
 """ Best practice in production:
     1. Wrap all commits in 
