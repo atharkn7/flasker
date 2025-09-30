@@ -44,6 +44,7 @@ class Users(db.Model, UserMixin):
     password_hash = db.Column(db.String(128), nullable=False)
     # Users can have multiple posts (One to Many)
     posts = db.relationship('Posts', backref='poster')
+    about_author = db.Column(db.Text(500), nullable=True)
 
     # A way to add a constraint at the db level would need - 
         # from sqlalchemy import CheckConstraint
@@ -155,6 +156,7 @@ def add_user():
                          email=form.email.data,
                          username=form.username.data,
                          fav_color=form.fav_color.data,
+                         about_author=form.about_author.data,
                          password_hash=hashed_pw)
             
             # Commiting to DB
@@ -184,13 +186,14 @@ def update(id):
         user_to_update.email = request.form["email"]
         user_to_update.username = request.form["username"]
         user_to_update.fav_color = request.form["fav_color"]
+        user_to_update.about_author = request.form["about_author"]
         try:
             db.session.commit()
             flash("User Updated Successfully!!!")
-            return redirect(url_for("add_user"))
+            return redirect(url_for("dashboard"))
         except:
             flash("User Update Failed!!! Try Again...")
-            return redirect(url_for("add_user"))
+            return redirect(url_for("dashboard"))
     else:
         return render_template("update.html", 
                                form=form, 
@@ -255,6 +258,7 @@ def dashboard():
         user_to_update.email = form.email.data
         user_to_update.name = form.name.data
         user_to_update.fav_color = form.fav_color.data
+        user_to_update.about_author = form.about_author.data
         
         try:
             # DB commit

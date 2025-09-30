@@ -1,6 +1,6 @@
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, EmailField, PasswordField, BooleanField, ValidationError
+from wtforms import StringField, SubmitField, EmailField, PasswordField, BooleanField, ValidationError, TextAreaField
 from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired, Length, EqualTo
 
@@ -15,6 +15,7 @@ class UserForm(FlaskForm):
     password = PasswordField('Password', validators=[Length(min=6, max=16), DataRequired(), EqualTo('password2', message='Passwords must match!')])
     password2 = PasswordField('Confirm Password', validators=[Length(min=6, max=16), DataRequired()]) 
     submit = SubmitField('Submit')
+    about_author = TextAreaField("About Author")
     """ Create another UpdateUserForm() since this will not work when updating"""
 
 # User login Form

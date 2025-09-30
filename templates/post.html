@@ -12,7 +12,17 @@
     <hr>
     <small> Author: {{ post.poster.name }} </small> <strong> | </strong>
     <small> Date Posted: {{ post.date_posted.strftime('%B %d, %Y') }} </small>
-    <p> Content: {{ post.content|safe }} </p><br>
+
+    {% if post.poster.about_author %}
+    <br>
+    <small> About: {{ post.poster.about_author }} </small>
+    {% endif %}
+
+    <br><br>
+    <div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+        <p> {{ post.content|safe }} </p>
+    </div>
+
     <a href="{{url_for('posts')}}" class="btn btn-outline-secondary btn-sm">Back to Blogs</a>
 
     {% if post.poster_id==current_user.id %}

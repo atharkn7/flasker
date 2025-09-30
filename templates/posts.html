@@ -25,7 +25,7 @@
     <h4><strong>{{ post.title }} </strong><br></h4>
     <small> Author: {{ post.poster.name }} </small> <strong> | </strong>
     <small> Date Posted: {{ post.date_posted.strftime('%B %d, %Y') }}
-        <p> Content: <br> {{ post.content|safe }} </p><br>
+        <p> {{ post.content|safe }} </p><br>
     </small>
     <a href="{{url_for('post', id=post.id)}}" class="btn btn-outline-secondary btn-sm">View Post</a>
 

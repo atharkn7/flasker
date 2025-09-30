@@ -34,6 +34,7 @@
                         <li><strong>Email:</strong> {{ current_user.email }}</li>
                         <li><strong>Favorite Color:</strong> {{ current_user.fav_color }}</li>
                         <li><strong>Date Joined:</strong> {{ current_user.date_added.strftime('%B %d, %Y') }}</li>
+                        <li><strong>About:</strong> {{ current_user.about_author }}</li>
                         <!-- Fixing the date -->
                     </ul>
                 </div>
@@ -85,6 +86,14 @@
                 </div>
             </div>
             <br>
+            <div class="row">
+                <div class="col">
+                    {{ form.about_author.label(class="form-label") }}
+                    <textarea class="form-control" name="about_author">{{ user_to_update.about_author }}</textarea>
+
+                    <!-- {{ form.about_author(class="form-control", value=user_to_update.about_author) }} -->
+                </div>
+            </div>
     </div>
     <div class="card-footer text-end"> <!-- Moving button to right -->
         {{ form.submit(class="btn btn-outline-secondary btn-sm") }}
