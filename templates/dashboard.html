@@ -33,8 +33,10 @@
                         <li><strong>Username:</strong> {{ current_user.username }}</li>
                         <li><strong>Email:</strong> {{ current_user.email }}</li>
                         <li><strong>Favorite Color:</strong> {{ current_user.fav_color }}</li>
-                        <li><strong>Date Joined:</strong> {{ current_user.date_added.strftime('%B %d, %Y') }}</li>
                         <li><strong>About:</strong> {{ current_user.about_author }}</li>
+                        <li><strong>Profile Pic:</strong> {{ current_user.profile_pic }}</li>
+                        <li><strong>Date Joined:</strong> {{ current_user.date_added.strftime('%B %d, %Y') }}</li>
+
                         <!-- Fixing the date -->
                     </ul>
                 </div>
@@ -61,7 +63,7 @@
         Update Profile
     </div>
     <div class="card-body">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data"> <!-- Allows img upload-->
             {{ form.hidden_tag() }}
             <!-- Added visual rows with bootstrap -->
             <div class="row">
@@ -92,6 +94,13 @@
                     <textarea class="form-control" name="about_author">{{ user_to_update.about_author }}</textarea>
 
                     <!-- {{ form.about_author(class="form-control", value=user_to_update.about_author) }} -->
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    {{ form.profile_pic.label(class="form-label") }}
+                    {{ form.profile_pic(class="form-control", value=user_to_update.profile_pic) }}
                 </div>
             </div>
     </div>

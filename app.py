@@ -45,6 +45,7 @@ class Users(db.Model, UserMixin):
     # Users can have multiple posts (One to Many)
     posts = db.relationship('Posts', backref='poster')
     about_author = db.Column(db.Text(500), nullable=True)
+    profile_pic = db.Column(db.String(), nullable=True)
 
     # A way to add a constraint at the db level would need - 
         # from sqlalchemy import CheckConstraint
@@ -259,14 +260,16 @@ def dashboard():
         user_to_update.name = form.name.data
         user_to_update.fav_color = form.fav_color.data
         user_to_update.about_author = form.about_author.data
+        # Can use (request.files["profile_pic"]) as well and will work
+        user_to_update.profile_pic = form.profile_pic.data
         
         try:
             # DB commit
             db.session.commit()
             flash("Updated Successfully!")
             return redirect(url_for("dashboard"))
-        except:
-            flash("Update failed! Try again...")
+        except Exception as e:
+            flash(f"Update failed! Try again... | Error: {e}")
             return redirect(url_for("dashboard"))
             
     # GET workflow

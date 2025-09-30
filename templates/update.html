@@ -41,6 +41,14 @@
                 <textarea class="form-control" name="about_author">{{ user_to_update.about_author }}</textarea>
             </div>
         </div>
+        <br>
+        <!--  ADD LATER 
+        <div class="row">
+            <div class="col">
+                {{ form.profile_pic.label(class="form-label") }}
+                {{ form.profile_pic(class="form-control", value=user_to_update.profile_pic) }}
+            </div>
+        </div>  -->
         <hr>
         <br>
         {{ form.submit(class="btn btn-outline-secondary btn-sm") }}

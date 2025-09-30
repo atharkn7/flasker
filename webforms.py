@@ -1,5 +1,6 @@
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
 from wtforms import StringField, SubmitField, EmailField, PasswordField, BooleanField, ValidationError, TextAreaField
 from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired, Length, EqualTo
@@ -16,6 +17,7 @@ class UserForm(FlaskForm):
     password2 = PasswordField('Confirm Password', validators=[Length(min=6, max=16), DataRequired()]) 
     submit = SubmitField('Submit')
     about_author = TextAreaField("About Author")
+    profile_pic = FileField('Profile Pic')
     """ Create another UpdateUserForm() since this will not work when updating"""
 
 # User login Form
