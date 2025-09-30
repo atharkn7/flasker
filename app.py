@@ -438,13 +438,14 @@ def search():
 
     if form.validate_on_submit():
         
+        searched = form.searched.data
         # Searching content field in DB
-        posts = post.filter(Posts.content.like('%'+form.searched.data+'%'))
+        posts = post.filter(Posts.content.like('%'+searched+'%'))
         posts = posts.order_by(Posts.title).all()
 
-        return render_template("search.html", form=form, posts=posts)
+        return render_template("search.html", form=form, posts=posts, searched=searched)
 
-    return render_template("search.html", form=form)
+    return render_template("search.html", form=form, searched=searched)
 
 
 """ Best practice in production:

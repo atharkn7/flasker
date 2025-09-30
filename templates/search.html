@@ -3,11 +3,11 @@
 {% block body %}
 
 <!-- Heading -->
-<div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-    <h2 class="font-monospace" style="text-align: center;"> Searched Blogs... </h2>
-</div>
+<br>
+<h3 class="text-end">You Searched For: <em>{{ searched }}</em></h3>
 
-
+{% if posts %}
+<br>
 <!-- Searched Posts -->
 {% for post in posts %}
 <div class="shadow p-3 mb-2 bg-body-tertiary rounded">
@@ -26,6 +26,10 @@
 </div>
 {% endfor%}
 
+{% else %}
 
+<p class="text-end">Sorry, your search term <strong>{{searched}}</strong> was not found...</p>
+
+{% endif %}
 
 {% endblock %}

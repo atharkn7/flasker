@@ -12,6 +12,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('posts') }}">Blogs</a>
                 </li>
+
+                {% if current_user.is_authenticated %}
+                <!-- Only logged in users can access -->
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('add_post') }}">Post Blog</a>
                 </li>
@@ -21,10 +25,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('user') }}">Namer</a>
                 </li>
-
-                {% if current_user.is_authenticated %}
-
-                <!-- Only logged in users can access -->
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
                 </li>
