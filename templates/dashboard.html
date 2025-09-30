@@ -24,17 +24,25 @@
     <div class="card-header bg-light fw-bold">
         {{ current_user.name }}'s Dashboard
     </div>
-    <div class="card-body">
-        <h5 class="card-title">Welcome!</h5>
-        <hr>
-        <ul class="list-unstyled mb-3">
-            <li><strong>Id:</strong> {{ current_user.id }}</li>
-            <li><strong>Username:</strong> {{ current_user.username }}</li>
-            <li><strong>Email:</strong> {{ current_user.email }}</li>
-            <li><strong>Favorite Color:</strong> {{ current_user.fav_color }}</li>
-            <li><strong>Date Joined:</strong> {{ current_user.date_added.strftime('%B %d, %Y') }}</li>
-            <!-- Fixing the date -->
-        </ul>
+    <div class="container">
+        <div class="row">
+            <div class="col-8 pt-3">
+                <div class="card-body">
+                    <ul class="list-unstyled mb-3">
+                        <li><strong>Id:</strong> {{ current_user.id }}</li>
+                        <li><strong>Username:</strong> {{ current_user.username }}</li>
+                        <li><strong>Email:</strong> {{ current_user.email }}</li>
+                        <li><strong>Favorite Color:</strong> {{ current_user.fav_color }}</li>
+                        <li><strong>Date Joined:</strong> {{ current_user.date_added.strftime('%B %d, %Y') }}</li>
+                        <!-- Fixing the date -->
+                    </ul>
+                </div>
+            </div>
+            <div class="col-4">
+                <img src=" {{ url_for ('static', filename='images/default_pic.png') }}" alt="Default Pic"
+                    class="img-thumbnail float-end me-4" width="200" style="border-radius: 50%;">
+            </div>
+        </div>
     </div>
     <div class="card-footer text-end"> <!-- Moving button to right -->
 
