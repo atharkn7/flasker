@@ -124,6 +124,18 @@ def user():
     
 
 """ USER MANAGEMENT """
+# Admin User
+@app.route("/admin")
+def admin():
+    # Logic to say user ID 1 is admin ()
+        # Not the best way to do this but a hacky way
+    if current_user.id == 1:
+        return render_template("admin.html")
+    else:
+        flash("You are not authorized to access this page...")
+        return redirect(url_for("dashboard"))
+
+
 # Add User Page (Shows how to add to DB)
 @app.route("/user/add", methods=["GET", "POST"])
 def add_user():
@@ -419,7 +431,7 @@ def delete_posts(id):
 
 """ BLOG ACTIONS """
 # Search blog posts
-@app.route("/search", methods=["POST"])
+@app.route("/search", methods=["GET", "POST"])
 def search():
     form = SearchForm()
     post = Posts.query  # Getting all posts
