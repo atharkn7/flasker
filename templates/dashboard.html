@@ -41,9 +41,16 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-4">
+            <!-- d-flex → makes column flex container | align-items-center → vertical centering | justify-content-center → horizontal centering -->
+            <div class="col-4 d-flex align-items-center justify-content-end">
+                {% if current_user.profile_pic %}
+                <img src=" {{ url_for ('static', filename='images/' + current_user.profile_pic ) }}" alt="Profile Pic"
+                    class="img-thumbnail float-end me-4" width="200" style="border-radius: 50%;">
+                {% else %}
                 <img src=" {{ url_for ('static', filename='images/default_pic.png') }}" alt="Default Pic"
                     class="img-thumbnail float-end me-4" width="200" style="border-radius: 50%;">
+                {% endif %}
+
             </div>
         </div>
     </div>

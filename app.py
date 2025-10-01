@@ -7,6 +7,11 @@ from flask_sqlalchemy import SQLAlchemy
 from webforms import UserForm, PostForm, NamerForm, LoginForm, SearchForm
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Imports for saving file to folder and filename to db
+from werkzeug.utils import secure_filename  # Securing against injection attacks
+import uuid as uuid # Creates unique user id
+import os   # to save the file
+
 
 """ CONFIG """
 # Initializing the app
@@ -14,8 +19,14 @@ app = Flask(__name__)
 # App Configurations
 app.config['SECRET_KEY'] = 'pass'   # Secret Key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' # Database
+
 # Rich Text Editor
 ckeditor = CKEditor(app)
+
+# Image upload folder
+UPLOAD_FOLDER = 'static/images/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 # Initializing the DB
 db = SQLAlchemy(app)
@@ -260,11 +271,25 @@ def dashboard():
         user_to_update.name = form.name.data
         user_to_update.fav_color = form.fav_color.data
         user_to_update.about_author = form.about_author.data
-        # Can use (request.files["profile_pic"]) as well and will work
-        user_to_update.profile_pic = form.profile_pic.data
         
+        if request.files["profile_pic"]:     # Checking for NULL profile pic
+            # Saving User uploaded Profile pic
+            user_to_update.profile_pic = request.files["profile_pic"]
+            # Can use (request.files["profile_pic"]) form.profile_pic.data as well 
+            
+            # Grab Image Name securely
+            pic_filename = secure_filename(user_to_update.profile_pic.filename)
+            # Set UUID
+            pic_name = str(uuid.uuid1()) + "_" + pic_filename
+            # Saving image
+            saver = request.files['profile_pic']
+            
+            # Change it to a string to save to db
+            user_to_update.profile_pic = pic_name
+
         try:
             # DB commit
+            saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
             db.session.commit()
             flash("Updated Successfully!")
             return redirect(url_for("dashboard"))
