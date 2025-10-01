@@ -272,24 +272,22 @@ def dashboard():
         user_to_update.fav_color = form.fav_color.data
         user_to_update.about_author = form.about_author.data
         
-        if request.files["profile_pic"]:     # Checking for NULL profile pic
-            # Saving User uploaded Profile pic
-            user_to_update.profile_pic = request.files["profile_pic"]
-            # Can use (request.files["profile_pic"]) form.profile_pic.data as well 
-            
+        # Saving image to var
+        uploaded_image = form.profile_pic.data
+            # Can use (request.files["profile_pic"]) OR form.profile_pic.data as well 
+
+        if uploaded_image:     # Checking for NULL profile pic
             # Grab Image Name securely
-            pic_filename = secure_filename(user_to_update.profile_pic.filename)
+            pic_filename = secure_filename(uploaded_image.filename)
             # Set UUID
             pic_name = str(uuid.uuid1()) + "_" + pic_filename
-            # Saving image
-            saver = request.files['profile_pic']
-            
             # Change it to a string to save to db
             user_to_update.profile_pic = pic_name
 
         try:
-            # DB commit
-            saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
+            # Saving image to folder
+            uploaded_image.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
+            # DB Commit
             db.session.commit()
             flash("Updated Successfully!")
             return redirect(url_for("dashboard"))
