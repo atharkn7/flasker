@@ -2,7 +2,131 @@
 
 {% block body %}
 
-<h3> Admin Page: </h3>
-<p>Do Admin Stuff here...</p>
+<!-- Heading -->
+<div class="shadow-sm p-2 mb-4 bg-body-tertiary rounded">
+    <h3 class="font-monospace" style="text-align: center;"> Admin Page </h3>
+</div>
+
+<!-- Alert Message -->
+{% with messages = get_flashed_messages() %} <!-- Correct way to check if there are any messages-->
+{% if messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor%}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="row p-2">
+    <!-- Links Table (Left) -->
+    <div class="col-md-3">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered align-middle shadow-sm"
+                style="max-width: 250px; border-radius: 8px; overflow: hidden;">
+                <thead>
+                    <tr class="table-dark text-center">
+                        <th scope="col">Links</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    <tr>
+                        <td class="text-center">
+                            <a href="{{ url_for('add_user') }}" class="btn btn-outline-secondary btn-sm w-100">
+                                Register User
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                            <a href="{{ url_for('test_pw') }}" class="btn btn-outline-secondary btn-sm w-100">
+                                Hash Test
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                            <a href="{{ url_for('user') }}" class="btn btn-outline-secondary btn-sm w-100">
+                                Namer Form
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                            <a href="{{ url_for('posts') }}" class="btn btn-outline-secondary btn-sm w-100">
+                                Edit Blogs
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Users Table (Right) -->
+    <div class="col-md-9">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered align-middle text-center shadow-sm"
+                style="border-radius: 8px; overflow: hidden;">
+                <thead>
+                    <tr class="table-dark">
+                        <th>Id</th>
+                        <th>Edit User</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Favorite Color</th>
+                        <th>Delete</th> <!-- Can remove if needed -->
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% for user in our_users %}
+                    <tr>
+                        <td>{{user.id}}.</td>
+                        <td><a href="{{ url_for('update', id=user.id) }}">{{user.name}}</a></td>
+                        <td>{{ user.username }}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.fav_color}}</td>
+                        <td>
+                            <a href="{{ url_for('delete', id=user.id) }}" class="btn btn-outline-danger btn-sm">X</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<hr>
+<!-- All Posts -->
+<div class="row mt-4">
+    {% for post in posts %}
+    <div class="col-md-4 mb-4"> <!-- 3 cards per row on medium+ screens -->
+        <div class="card h-100 shadow-sm">
+            <div class="card-body ">
+                <h4 class="card-title">{{ post.title }}</h4>
+                <hr>
+                <small>
+                    Author: {{ post.poster.name }} <br>
+                    Date Posted: {{ post.date_posted.strftime('%B %d, %Y') }} <br>
+                </small>
+                <hr>
+                <!-- Content -->
+                <div class="card-text truncate-multi-line">{{ post.content|safe }}</div>
+                <br>
+                <!-- Buttons-->
+                <a href="{{ url_for('edit_posts', id=post.id) }}" class="btn btn-outline-secondary btn-sm">Edit Post</a>
+                <form action="{{ url_for('delete_posts', id=post.id) }}" method="POST" style="display:inline;">
+                    {{ form.hidden_tag() }}
+                    <button type="submit" class="btn btn-outline-danger btn-sm">DELETE</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 
 {% endblock %}

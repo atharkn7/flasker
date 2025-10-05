@@ -140,10 +140,16 @@ def user():
 # Admin User
 @app.route("/admin")
 def admin():
+    our_users = Users.query.order_by(Users.date_added)
+    posts = Posts.query.order_by(Posts.date_posted)
+    form = PostForm()
     # Logic to say user ID 1 is admin ()
         # Not the best way to do this but a hacky way
     if current_user.id == 1:
-        return render_template("admin.html")
+        return render_template("admin.html", 
+                               our_users=our_users, 
+                               posts=posts, 
+                               form=form)
     else:
         flash("You are not authorized to access this page...")
         return redirect(url_for("dashboard"))
@@ -154,8 +160,11 @@ def admin():
 def add_user():
     # Checking if user is already logged in
     if current_user.is_authenticated:
-        flash("Already logged in!")
-        return redirect(url_for('dashboard'))
+        if current_user.id == 1:
+            pass
+        else:
+            flash("Already logged in!")
+            return redirect(url_for('dashboard'))
 
     form = UserForm()
     our_users = Users.query.order_by(Users.date_added)
@@ -181,7 +190,11 @@ def add_user():
             db.session.commit()
 
             flash("User Added Successfully!")
-            return redirect(url_for("add_user"))
+            if current_user.is_authenticated:   # Diff routing for admin
+                if current_user.id == 1:
+                    return redirect(url_for('admin'))
+            else:
+                return redirect(url_for("dashboard"))
         
         else:
             flash("Already Registered!")
@@ -223,12 +236,15 @@ def update(id):
 def delete(id):
     user_to_delete = Users.query.get_or_404(id)
 
-    if current_user.id == user_to_delete.id:    
+    if current_user.id == user_to_delete.id or current_user.id == 1:    
         try:
             db.session.delete(user_to_delete)
             db.session.commit()
             flash("User Deleted Successfully!!!")
-            return redirect(url_for("add_user"))
+            if current_user.id == 1:
+                return redirect(url_for('admin'))
+            else:
+                return redirect(url_for("add_user"))
         except:
             flash("Failed to delete user! Try again...")
             return redirect(url_for("add_user"))
@@ -416,7 +432,7 @@ def edit_posts(id):
     form = PostForm()
     # form = PostForm(obj=post_to_update)   # Pre-fills form with existing values
 
-    if post_to_update.poster_id == current_user.id:
+    if post_to_update.poster_id == current_user.id or current_user.id == 1:
         # POST workflow
         if form.validate_on_submit():
             # Updating Post (can be automated with populate_obj line below)
@@ -452,7 +468,7 @@ def delete_posts(id):
     poster_id = current_user.id
 
     # Checking if current user is the same as poster
-    if poster_id == post_to_delete.poster_id:    
+    if poster_id == post_to_delete.poster_id or poster_id == 1:    
         try:
             # Deleting selected user
             db.session.delete(post_to_delete)

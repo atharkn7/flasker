@@ -29,7 +29,7 @@
     </small>
     <a href="{{url_for('post', id=post.id)}}" class="btn btn-outline-secondary btn-sm">View Post</a>
 
-    {% if post.poster_id==current_user.id %}
+    {% if post.poster_id==current_user.id or current_user.id==1%}
     <a href="{{url_for('edit_posts', id=post.id)}}" class="btn btn-outline-secondary btn-sm">Edit Post</a>
     <!-- Modified to use POST method and ask confirmation -->
     <form action="{{ url_for('delete_posts', id=post.id) }}" method="POST" style="display:inline;">

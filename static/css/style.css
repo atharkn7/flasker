@@ -1,3 +1,28 @@
 body {
     background-color: #f4f4f4;
 }
+
+/* Handles single line truncation */
+.truncate-single-line {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Handles multi line truncation */
+.truncate-multi-line {
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+
+    white-space: normal;
+}
+
+/* ensure multiple inner <p> don’t break clamping */
+.truncate-multi-line p {
+    display: inline;
+    margin: 0;
+}
