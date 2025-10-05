@@ -152,6 +152,11 @@ def admin():
 # Add User Page (Shows how to add to DB)
 @app.route("/user/add", methods=["GET", "POST"])
 def add_user():
+    # Checking if user is already logged in
+    if current_user.is_authenticated:
+        flash("Already logged in!")
+        return redirect(url_for('dashboard'))
+
     form = UserForm()
     our_users = Users.query.order_by(Users.date_added)
 
@@ -214,16 +219,22 @@ def update(id):
     
 # Removing a user from db
 @app.route("/delete/<int:id>")
+@login_required
 def delete(id):
     user_to_delete = Users.query.get_or_404(id)
-    try:
-        db.session.delete(user_to_delete)
-        db.session.commit()
-        flash("User Deleted Successfully!!!")
-        return redirect(url_for("add_user"))
-    except:
-        flash("Failed to delete user! Try again...")
-        return redirect(url_for("add_user"))
+
+    if current_user.id == user_to_delete.id:    
+        try:
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            flash("User Deleted Successfully!!!")
+            return redirect(url_for("add_user"))
+        except:
+            flash("Failed to delete user! Try again...")
+            return redirect(url_for("add_user"))
+    else:
+        flash("Unauthorized to delete selected user!")
+        return redirect(url_for('dashboard'))
 
 
 """ LOGIN MANAGEMENT """
