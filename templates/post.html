@@ -7,28 +7,47 @@
     <h2 class="font-monospace" style="text-align: center;"> FLASKER Blogs... </h2>
 </div>
 
-<div class="shadow p-3 mb-2 bg-body-tertiary rounded">
-    <h2><strong>{{ post.title }} </strong><br></h2>
-    <hr>
-    <small> Author: {{ post.poster.name }} </small> <strong> | </strong>
-    <small> Date Posted: {{ post.date_posted.strftime('%B %d, %Y') }} </small>
-
-    {% if post.poster.about_author %}
-    <br>
-    <small> About: {{ post.poster.about_author }} </small>
-    {% endif %}
-
-    <br><br>
-    <div class="shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+<div class="shadow p-3 mb-2 bg-body-tertiary rounded"> <!-- Image & Post -->
+    <div class="card mb-3">
+        <div class="row g-0 align-items-center"> <!-- align-items-center centers vertically -->
+            <div class="col-md-2 p-2 d-flex justify-content-center"> <!-- centers horizontally -->
+                {% if post.poster.profile_pic %}
+                <img src=" {{ url_for ('static', filename='images/' + post.poster.profile_pic ) }}" alt="Profile Pic"
+                    class="img-thumbnail float-end me-4" width="150" style="border-radius: 50%;">
+                {% else %}
+                <img src=" {{ url_for ('static', filename='images/default_pic.png') }}" alt="Default Pic"
+                    class="img-thumbnail float-end me-4" width="150" style="border-radius: 50%;">
+                {% endif %}
+            </div>
+            <div class="col-md-10">
+                <div class="card-body">
+                    <h2><strong>{{ post.title }} </strong><br></h2>
+                    <hr>
+                    <small>
+                        Author: {{ post.poster.name }} <strong> | </strong>
+                        Date Posted: {{ post.date_posted.strftime('%B %d, %Y') }} <br>
+                        {% if post.poster.about_author %}
+                        About: {{ post.poster.about_author }}
+                        {% else %}
+                        About: <em> About Author not added...</em>
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-3 ps-3">
         <p> {{ post.content|safe }} </p>
     </div>
+    <div>
+        <a href="{{url_for('posts')}}" class="btn btn-outline-secondary btn-sm">Back to Blogs</a>
+        {% if post.poster_id==current_user.id %}
+        <a href="{{url_for('edit_posts', id=post.id)}}" class="btn btn-outline-secondary btn-sm">Edit Post</a>
+        <!--  <a href="{{url_for('delete_posts', id=post.id)}}" class="btn btn-outline-danger btn-sm">DELETE</a> -->
+        {% endif %}
+    </div>
 
-    <a href="{{url_for('posts')}}" class="btn btn-outline-secondary btn-sm">Back to Blogs</a>
 
-    {% if post.poster_id==current_user.id %}
-    <a href="{{url_for('edit_posts', id=post.id)}}" class="btn btn-outline-secondary btn-sm">Edit Post</a>
-    <!--  <a href="{{url_for('delete_posts', id=post.id)}}" class="btn btn-outline-danger btn-sm">DELETE</a> -->
-    {% endif %}
 </div>
 
 {% endblock %}
